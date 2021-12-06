@@ -18,6 +18,7 @@ public class WeaponManager : MonoBehaviour
     void Start()
     {
         audioSource = GetComponent<AudioSource>();
+        weaponDamage = PlayerPrefs.GetInt("Diff");
     }
 
     // Update is called once per frame

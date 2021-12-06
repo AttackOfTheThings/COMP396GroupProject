@@ -14,6 +14,8 @@ public class GameManager : MonoBehaviour
     public GameObject gameOverScreen;
     public Text roundStatistics;
     public GameObject pauseMenu;
+    public GameObject doorToFreedom;
+    //public Text freedomText;
 
     public Animator fadeScreenAnimator;
 
@@ -21,6 +23,8 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         Time.timeScale = 1;
+        //Cursor.lockState = CursorLockMode.None;
+        AudioListener.volume = PlayerPrefs.GetFloat("Volume");
     }
 
     // Update is called once per frame
@@ -51,7 +55,10 @@ public class GameManager : MonoBehaviour
             enemiesAlive++;
         }
         
-
+        if(round > 3)
+        {
+            Destroy(doorToFreedom);
+        }
     }
     public void Restart()
     {
@@ -91,7 +98,7 @@ public class GameManager : MonoBehaviour
     {
         pauseMenu.SetActive(false);
         Time.timeScale = 1;
-        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.lockState = CursorLockMode.None;
         AudioListener.volume = 1;
 
     }
