@@ -54,6 +54,13 @@ public class WeaponManager : MonoBehaviour
 
                 Destroy(instParticle, 2f);
             }
+            NPCController npcController = hit.transform.GetComponent<NPCController>();
+            if(npcController != null)
+            {
+                npcController.Hit(weaponDamage/2);
+                GameObject instParticle = Instantiate(hitParticle, hit.point, Quaternion.LookRotation(hit.normal));
+                instParticle.transform.parent = hit.transform;
+            }
         }
     }
 

@@ -12,16 +12,17 @@ public class MainMenuManager : MonoBehaviour
     }
     public void StartGameEasy()
     {
-        PlayerPrefs.SetInt("Diff", 50);
+        PlayerPrefs.SetInt("Diff", 100);
         SceneManager.LoadScene(1);
     }
     public void StartGameMedium()
     {
-        PlayerPrefs.SetInt("Diff", 30);
+        PlayerPrefs.SetInt("Diff", 50);
         SceneManager.LoadScene(1);
     }
     public void StartGameHard()
     {
+        PlayerPrefs.SetInt("Diff", 30);
         SceneManager.LoadScene(1);
     }
     

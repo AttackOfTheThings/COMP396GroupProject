@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class NPCController : MonoBehaviour
 {
-    public Animator monsterAnimator;
     //Simple FSM (FiniteStateMachine)
     public enum NPCState{ Patrolling, Chasing, Attacking};
     public float CloseEnoughtDistance = 2f; // <=2m => attack
@@ -14,18 +13,12 @@ public class NPCController : MonoBehaviour
     public NPCState currentState = NPCState.Patrolling;
     public bool bCanSeePlayer;
     public GameObject goPlayer;
+    public float enemyHealth = 100;
 
-    public bool playerIsInReach;
-    private float attackDelayTimer;
-    public float attackAnimationDelay;
-    public float delayBetweenAttacks;
-
-    //new as of sept 20th
-
-    GameObject[] WayPoints;
     int CurrentWayPointIndex = 0;
     public float speed = 1.0f;
 
+    public Animator monsterAnimator;
     //Spet 22
     public float angularSpeedDegPerSec = 60.0f; //deg per second
 
@@ -40,18 +33,9 @@ public class NPCController : MonoBehaviour
         return deg / 180f * Mathf.PI;
     }
 
-    float Rad2Deg (float rad)
-    {
-        //return rad * Mathf.Rad2Deg;
-        return rad / Mathf.PI * 180;
-    }
     void Start()
     {
         goPlayer = GameObject.FindGameObjectWithTag("Player");
-        //First Method use tags
-        WayPoints = GameObject.FindGameObjectsWithTag("WayPoint");
-
-        monsterAnimator = GetComponent<Animator>();
         angularSpeedDegPerSec = Deg2Rad(angularSpeedDegPerSec);
         
 
@@ -62,6 +46,7 @@ public class NPCController : MonoBehaviour
     {
         angularSpeedDegPerSec = Deg2Rad(angularSpeedDegPerSec);
         HandleFSM();
+        
     }
     void HandleFSM()
     {
@@ -85,26 +70,31 @@ public class NPCController : MonoBehaviour
     {
         Debug.Log((goPlayer.transform.position - this.transform.position).magnitude);
         Debug.Log("In NPCController.HandleAttackingState");
-        
-
         bool playerAlive = goPlayer.GetComponent<PlayerManager>();
-      
+        if(!playerAlive)
+        {
+            ChangeState(NPCState.Patrolling);
+        }
+        else
+        {
             float distance = Vector3.Distance(this.transform.position, goPlayer.transform.position);
-            if(distance <= CloseEnoughtDistance)
+            if(distance > CloseEnoughtDistance)
             {
-                monsterAnimator.SetBool("isAttackRange", true);
-                monsterAnimator.SetBool("isChasing", true);
-               
-               
+                if(CanSeeAdversary())
+                {
+                    ChangeState(NPCState.Chasing);
+                }
+                else
+                {
+                    ChangeState(NPCState.Patrolling);
+                }
             }
-            else
-            {
-                monsterAnimator.SetBool("isChasing", false);
-                monsterAnimator.SetBool("isAttackRange", false);
-                ChangeState(NPCState.Patrolling);
+        }
+       //If player dies => patrol
+       // d(this, target) > attack dist =>
+       // if see target => chase
+       //else patrol
 
-            }
-        
 
     }
 
@@ -112,22 +102,27 @@ public class NPCController : MonoBehaviour
     {
         Debug.Log((goPlayer.transform.position - this.transform.position).magnitude);
         Debug.Log("In NPCController.HandleChasingState");
-        if (!CanSeeAdversary()) // can't see so patrolling
-        {
-            ChangeState(NPCState.Patrolling);
-        }
-        if(Vector3.Distance(this.transform.position, goPlayer.transform.position) <= CloseEnoughtDistance)
+
+        float distance = Vector3.Distance(this.transform.position, goPlayer.transform.position);
+        Debug.Log("Distance Between"  + distance);
+        if (distance <= CloseEnoughtDistance)
         {
             ChangeState(NPCState.Attacking);
-            
+            monsterAnimator.SetBool("isChasing", true);
+            monsterAnimator.SetBool("isAttackRange", true);
+
+            Invoke( "Attack2", 0.8f);
+
         }
         else
         {
             this.transform.position = MyMoveTowards(this.transform.position, goPlayer.transform.position, speed * Time.deltaTime);
+            monsterAnimator.SetBool("isChasing", true);
             monsterAnimator.SetBool("isAttackRange", false);
         }
         this.transform.position = MyMoveTowards(this.transform.position, goPlayer.transform.position, speed * Time.deltaTime);
        
+
     }
     private void HandlePatrollingState()
     {
@@ -141,64 +136,12 @@ public class NPCController : MonoBehaviour
         else if (CanSeeAdversary() && ((goPlayer.transform.position - this.transform.position).magnitude < CloseEnoughtDistance) == true) // can see too close so attacking
         {
             ChangeState(NPCState.Attacking);
-            monsterAnimator.SetBool("isAttackingRange", true);
-        }
-        //monsterAnimator.SetBool("isChasing", true);
-        FollowPatrolingPath();
-    }
-    //----------------------------------------------------------------------------------------------------------------------------------------
-    /*
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject == goPlayer)
-        {
-            playerIsInReach = true;
-
-        }
-    }
-    private void OnCollisionStay(Collision collision)
-    {
-        if (playerIsInReach)
-        {
-            attackDelayTimer += Time.deltaTime;
         }
 
-        if (attackDelayTimer >= delayBetweenAttacks - attackAnimationDelay && attackDelayTimer <= delayBetweenAttacks && playerIsInReach)
-        {
-            monsterAnimator.SetTrigger("isAttacking");
-        }
-
-        if (attackDelayTimer >= delayBetweenAttacks && playerIsInReach)
-        {
-            goPlayer.GetComponent<PlayerManager>().Hit(50);
-            attackDelayTimer = 0;
-        }
+       
     }
-    private void OnCollisionExit(Collision collision)
-    {
-        if (collision.gameObject == goPlayer)
-        {
-            playerIsInReach = false;
-            attackDelayTimer = 0;
-        }
-    }
-    */
-    //-----------------------------------------------------------------------------------------------------------------------------------------
     
-    private void FollowPatrolingPath()
-    {
-        Vector3 target = WayPoints[CurrentWayPointIndex].transform.position;
-
-        if (Vector3.Distance(this.transform.position, target) < 0.1f)
-        {
-            CurrentWayPointIndex = CalculateNextWayPointIndex();
-            target = WayPoints[CurrentWayPointIndex].transform.position;
-        }
-        
-        Vector3 movement =  MyMoveTowards(this.transform.position, target, speed * Time.deltaTime);
-        this.transform.position = movement;
-        
-    }
+    
 
     Vector3 MyMoveTowards(Vector3 current, Vector3 target, float maxDistanceDelta)
     {
@@ -210,39 +153,48 @@ public class NPCController : MonoBehaviour
         return movement;
     }
 
-    private int CalculateNextWayPointIndex()
-    {
-        //Strategy 1 - follow in order
-        return CurrentWayPointIndex = (CurrentWayPointIndex + 1) % WayPoints.Length;
-    }
+  
 
 
     private bool CanSeeAdversary()
     {
-       
         Vector3 playerPos = goPlayer.transform.position;
         Vector3 enemyToPlayerHeading = playerPos - this.transform.position;
         float cosAngleE2P = Vector3.Dot(this.transform.forward, enemyToPlayerHeading)/enemyToPlayerHeading.magnitude;
-        //float cosAngleE2P = Vector3.Dot(this.transform.forward, enemyToPlayerHeading); // we need only the sign of cosAngel, so no need to devinde by a positive value (optimization)
         bCanSeePlayer = (cosAngleE2P > 0);
         float angle = Vector3.Angle(this.transform.forward, enemyToPlayerHeading);
         Debug.Log("angle = " + angle);
         return bCanSeePlayer; //for testing prposes
 
+        //cos (theta)=v1.v2/(|v1|*|v2|)
+        //if v1 is a unit vector => |v1|=1 //foward = (0,0,1)
 
     }
-    private void OnDrawGizmos()
+    
+    public void Hit(float damageEnemy)
     {
-        Gizmos.color = Color.black;
-        if(WayPoints != null && WayPoints.Length > 0)
+        enemyHealth -= damageEnemy;
+        //slider.value = enemyHealth;
+
+        if (enemyHealth <= 0)
         {
-            for (int i = 0; i < WayPoints.Length; i++)
-            {
-                Vector3 from = WayPoints[i].transform.position;
-                Vector3 to = WayPoints[(i + 1) % WayPoints.Length].transform.position;
-                Gizmos.DrawLine(from, to);
-            }
+            monsterAnimator.SetTrigger("isDead");
+            //gameManager.enemiesAlive--;
+            Destroy(gameObject, 3f);
+            //Destroy(GetComponent<NavMeshAgent>());
+            //Destroy(GetComponent<EnemyManager>());
+            Destroy(GetComponent<CapsuleCollider>());
+            //Destroy(GetComponent<Canvas>());
+            Debug.Log("Died");
         }
-        
+        Debug.Log(enemyHealth);
+    }
+
+   
+    public void  Attack2()
+    {
+        goPlayer.GetComponent<PlayerManager>().Hit(50);
+
+
     }
 }
