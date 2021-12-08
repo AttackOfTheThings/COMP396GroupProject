@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -15,6 +16,7 @@ public class PlayerMovement : MonoBehaviour
     public float groundDistacne = 0.4f;
     public LayerMask groundMask;
     public float jumpHight = 2f;
+    public PhotonView photonView;
 
     // Start is called before the first frame update
     void Start()
@@ -25,6 +27,11 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(PhotonNetwork.InRoom && !photonView.IsMine)
+        {
+            return;
+        }
+
         //Chcek if grouned
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistacne, groundMask);
         if(isGrounded && velocity.y < 0)

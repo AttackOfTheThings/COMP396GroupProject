@@ -1,12 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
 public class MouseLookCam : MonoBehaviour
 {
     public float mouseSensitivity = 1000f;
     public Transform playerBody;
     float xRotation = 0f;
+    public PhotonView photonView;
 
     // Start is called before the first frame update
     void Start()
@@ -17,6 +19,11 @@ public class MouseLookCam : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (PhotonNetwork.InRoom && !photonView.IsMine)
+        {
+            return;
+        }
+
         float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
         float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
 

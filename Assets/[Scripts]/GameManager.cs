@@ -16,12 +16,18 @@ public class GameManager : MonoBehaviour
     public GameObject pauseMenu;
     public GameObject doorToFreedom;
     //public Text freedomText;
+    public GameObject networkManager;
 
     public Animator fadeScreenAnimator;
 
     // Start is called before the first frame update
     void Start()
     {
+        if(networkManager)
+        {
+            spawnPoints = GameObject.FindGameObjectsWithTag("Spawners");
+        }
+        
         Time.timeScale = 1;
         //Cursor.lockState = CursorLockMode.None;
         AudioListener.volume = PlayerPrefs.GetFloat("Volume");
@@ -48,9 +54,9 @@ public class GameManager : MonoBehaviour
     {
         for (var x = 0; x < round; x++)
         {
-            GameObject spawnPoint = spawnPoints[Random.Range(0, spawnPoints.Length)];
+            GameObject spawnPoint1 = spawnPoints[Random.Range(0, spawnPoints.Length)];
             //EnemyPrefab, spawn position, rotaion)
-            GameObject enemySpawned = Instantiate(enemyPrefab, spawnPoint.transform.position, Quaternion.identity);
+            GameObject enemySpawned = Instantiate(enemyPrefab, spawnPoint1.transform.position, Quaternion.identity);
             enemySpawned.GetComponent<EnemyManager>().gameManager = GetComponent<GameManager>();
             enemiesAlive++;
         }

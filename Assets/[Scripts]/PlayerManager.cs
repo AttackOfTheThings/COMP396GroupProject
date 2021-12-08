@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using Photon.Pun;
 
 public class PlayerManager : MonoBehaviour
 {
@@ -14,6 +15,8 @@ public class PlayerManager : MonoBehaviour
     private float shakeDuration;
     //private Quaternion playerCameraOriginalRotation;
     public CanvasGroup hurtPannel;
+    public PhotonView photonView;
+
 
 
     public void Hit(float damage)
@@ -42,8 +45,13 @@ public class PlayerManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (PhotonNetwork.InRoom && !photonView.IsMine)
+        {
+            playerCamera.SetActive(false);
+            return;
+        }
 
-        if(hurtPannel.alpha > 0)
+        if (hurtPannel.alpha > 0)
         {
             hurtPannel.alpha -= Time.deltaTime;
         }
