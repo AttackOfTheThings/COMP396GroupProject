@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
+using Photon.Pun;
 
 public class EnemyManager : MonoBehaviour
 {
@@ -22,12 +23,13 @@ public class EnemyManager : MonoBehaviour
     public AudioSource audioSource;
 
     public AudioClip[] zombieSounds;
+    GameObject[] playersInScene;
 
     // Start is called before the first frame update
     void Start()
     {
         audioSource = GetComponent<AudioSource>();
-        player = GameObject.FindGameObjectWithTag("Player");
+        playersInScene = GameObject.FindGameObjectsWithTag("Player");
         slider.maxValue = enemyHealth;
         slider.value = enemyHealth;
 
@@ -36,13 +38,25 @@ public class EnemyManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(!audioSource.isPlaying)
+        playersInScene = GameObject.FindGameObjectsWithTag("Player");
+        if (!audioSource.isPlaying)
         {
             audioSource.clip = zombieSounds[Random.Range(0, zombieSounds.Length)];
             audioSource.Play();
         }
-        slider.transform.LookAt(player.transform);
-        GetComponent<NavMeshAgent>().destination = player.transform.position;
+        if(PhotonNetwork.InRoom && !PhotonNetwork.IsMasterClient)
+        {
+            return;
+        }
+
+        GetClosestPlayer();
+        if(player != null)
+        {
+            slider.transform.LookAt(player.transform);
+            GetComponent<NavMeshAgent>().destination = player.transform.position;
+        }
+
+        
         if(GetComponent<NavMeshAgent>().velocity.magnitude > 1)
         {
             enemyAnimator.SetBool("isRunning", true);
@@ -50,6 +64,25 @@ public class EnemyManager : MonoBehaviour
         else
         {
             enemyAnimator.SetBool("isRunning", false);
+        }
+    }
+
+    private void GetClosestPlayer()
+    {
+        float mindistance = Mathf.Infinity;
+        Vector3 currentPosition = transform.position;
+
+        foreach(GameObject thisPlayer in playersInScene)
+        {
+            if(thisPlayer != null)
+            {
+                float distance = Vector3.Distance(thisPlayer.transform.position, currentPosition);
+                if (distance < mindistance)
+                {
+                    player = thisPlayer;
+                    mindistance = distance;
+                }
+            }
         }
     }
 

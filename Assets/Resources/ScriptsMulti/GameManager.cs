@@ -4,9 +4,10 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Photon.Pun;
+using Photon.Realtime;
+using Hashtable = ExitGames.Client.Photon.Hashtable;
 
-
-public class GameManager : MonoBehaviour
+public class GameManager1 : MonoBehaviourPunCallbacks
 {
     public int enemiesAlive = 0;
     public int round = 0;
@@ -26,10 +27,10 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-      
-            spawnPoints = GameObject.FindGameObjectsWithTag("Spawners");
-    
         
+          spawnPoints = GameObject.FindGameObjectsWithTag("Spawners");
+        
+
         Time.timeScale = 1;
         //Cursor.lockState = CursorLockMode.None;
         AudioListener.volume = PlayerPrefs.GetFloat("Volume");
@@ -38,34 +39,62 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (enemiesAlive == 0)
+        if (PhotonNetwork.InRoom || PhotonNetwork.IsMasterClient && photonView.IsMine)
         {
-            round++;
-            NextWave(round);
-            roundNumber.text = "Round: " + round.ToString();
+            if (enemiesAlive == 0)
+            {
+                round++;
+                NextWave(round);
+                if(PhotonNetwork.InRoom)
+                {
+                    Hashtable hash = new Hashtable();
+                    hash.Add("Key", round);
+                    PhotonNetwork.LocalPlayer.SetCustomProperties(hash);
+                }
+                else
+                {
+                    DisplayNextRound(round);
+                }
+                
+            }
         }
-        
-        
 
-        if(Input.GetKeyDown(KeyCode.Escape))
+
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
             Pause();
         }
-        
+
+    }
+
+    private void DisplayNextRound(int round)
+    {
+        roundNumber.text = round.ToString();
     }
 
     public void NextWave(int round)
     {
+
         for (var x = 0; x < round; x++)
         {
             GameObject spawnPoint = spawnPoints[Random.Range(0, spawnPoints.Length)];
+            GameObject enemySpawned;
+
+            if(PhotonNetwork.InRoom)
+            {
+                enemySpawned = PhotonNetwork.Instantiate("Zombie", spawnPoint.transform.position,Quaternion.identity);
+            }
+            else
+            {
+                enemySpawned = Instantiate(Resources.Load("Zombie"), spawnPoint.transform.position, Quaternion.identity) as GameObject;
+            }
             //EnemyPrefab, spawn position, rotaion)
-            GameObject enemySpawned = Instantiate(enemyPrefab, spawnPoint.transform.position, Quaternion.identity);
+            //enemySpawned = Instantiate(enemyPrefab, spawnPoint1.transform.position, Quaternion.identity);
             enemySpawned.GetComponent<EnemyManager>().gameManager = GetComponent<GameManager>();
             enemiesAlive++;
         }
-        
-        if(round > 3)
+
+        if (round > 3)
         {
             Destroy(doorToFreedom);
         }
@@ -84,23 +113,13 @@ public class GameManager : MonoBehaviour
         Invoke("LoadMainMenu", 0.5f);
 
     }
-    public void DisconnectMP()
-    {
-        Application.Quit();
-        
-    }
-    
-    public void ExitGame()
-    {
-        Application.Quit();
-    }
+
     public void LoadMainMenu()
     {
         SceneManager.LoadScene(0);
     }
     public void GameOver()
     {
-
         Time.timeScale = 0;
         gameOverScreen.SetActive(true);
         Cursor.lockState = CursorLockMode.None;
@@ -121,5 +140,10 @@ public class GameManager : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         AudioListener.volume = 1;
 
+    }
+    public override void OnPlayerPropertiesUpdate(Player targetPlayer, ExitGames.Client.Photon.Hashtable changedProps)
+    {
+        Debug.Log("Player " + targetPlayer + "changedProps" + changedProps);
+        //base.OnPlayerPropertiesUpdate(targetPlayer, changedProps);
     }
 }

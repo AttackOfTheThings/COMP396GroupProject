@@ -3467,7 +3467,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &595669240
 Transform:
   m_ObjectHideFlags: 0
@@ -6902,7 +6902,9 @@ MonoBehaviour:
   roundStatistics: {fileID: 2117540411}
   pauseMenu: {fileID: 1424866484}
   doorToFreedom: {fileID: 275377362}
+  networkManager: {fileID: 0}
   fadeScreenAnimator: {fileID: 376851188}
+  photonView: {fileID: 0}
 --- !u!4 &1239355113
 Transform:
   m_ObjectHideFlags: 0

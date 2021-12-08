@@ -5493,7 +5493,7 @@ GameObject:
   - component: {fileID: 860638284}
   m_Layer: 0
   m_Name: Spawner (1)
-  m_TagString: Untagged
+  m_TagString: Spawners
   m_Icon: {fileID: 5132851093641282708, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -8627,7 +8627,9 @@ MonoBehaviour:
   roundStatistics: {fileID: 2117540411}
   pauseMenu: {fileID: 1424866484}
   doorToFreedom: {fileID: 781947806}
+  networkManager: {fileID: 0}
   fadeScreenAnimator: {fileID: 376851188}
+  photonView: {fileID: 0}
 --- !u!4 &1239355113
 Transform:
   m_ObjectHideFlags: 0
@@ -13663,7 +13665,7 @@ GameObject:
   - component: {fileID: 1986167385}
   m_Layer: 0
   m_Name: Spawner (0)
-  m_TagString: Untagged
+  m_TagString: Spawners
   m_Icon: {fileID: 5132851093641282708, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

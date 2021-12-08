@@ -430,6 +430,8 @@ GameObject:
   - component: {fileID: 886067356388808372}
   - component: {fileID: 8439756406980716159}
   - component: {fileID: 3564445804434217222}
+  - component: {fileID: 7310828127296374119}
+  - component: {fileID: 2747208249307235858}
   m_Layer: 6
   m_Name: FPS_Character
   m_TagString: Untagged
@@ -488,6 +490,43 @@ MonoBehaviour:
   mouseSensitivity: 380
   playerBody: {fileID: 4583976300680349274}
   photonView: {fileID: 3564445802723848226}
+--- !u!114 &7310828127296374119
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2881795435308917023}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 1
+  m_SynchronizeScale: 0
+  m_UseLocal: 1
+--- !u!114 &2747208249307235858
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2881795435308917023}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b8c4a61274f60b4ea5fb4299cfdbf14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowLayerWeightsInspector: 1
+  ShowParameterInspector: 1
+  m_SynchronizeParameters:
+  - Type: 4
+    SynchronizeType: 2
+    Name: isShooting
+  m_SynchronizeLayers:
+  - SynchronizeType: 2
+    LayerIndex: 0
 --- !u!1 &3436220227298226386
 GameObject:
   m_ObjectHideFlags: 0
@@ -573,9 +612,9 @@ Canvas:
   m_GameObject: {fileID: 3564445802708844458}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 0
-  m_Camera: {fileID: 0}
-  m_PlaneDistance: 100
+  m_RenderMode: 1
+  m_Camera: {fileID: 3564445803879432293}
+  m_PlaneDistance: 0.15
   m_PixelPerfect: 0
   m_ReceivesEvents: 1
   m_OverrideSorting: 0
@@ -1084,6 +1123,7 @@ MonoBehaviour:
   doorToFreedom: {fileID: 0}
   networkManager: {fileID: 5573285502379801443}
   fadeScreenAnimator: {fileID: 3564445804376190541}
+  photonView: {fileID: 3564445802723848226}
 --- !u!1 &3564445803635098121
 GameObject:
   m_ObjectHideFlags: 0
@@ -1207,7 +1247,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 3564445803610122833}
         m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-        m_MethodName: ReturnToTitle
+        m_MethodName: DisconnectMP
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1374,7 +1414,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Return To Title
+  m_Text: End Game
 --- !u!1 &3564445803803620503
 GameObject:
   m_ObjectHideFlags: 0
@@ -1857,7 +1897,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Return To Title
+  m_Text: End Game
 --- !u!1 &3564445804229206003
 GameObject:
   m_ObjectHideFlags: 0
@@ -2193,7 +2233,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 3564445803610122833}
         m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-        m_MethodName: ReturnToTitle
+        m_MethodName: DisconnectMP
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2667,6 +2707,7 @@ GameObject:
   - component: {fileID: 3564445802678536283}
   - component: {fileID: 3564445803223217863}
   - component: {fileID: 3564445802723848226}
+  - component: {fileID: 2756523546455397732}
   m_Layer: 6
   m_Name: First_Person_Player
   m_TagString: Player
@@ -2783,10 +2824,29 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 0
   observableSearch: 2
-  ObservedComponents: []
+  ObservedComponents:
+  - {fileID: 2756523546455397732}
+  - {fileID: 7310828127296374119}
+  - {fileID: 2747208249307235858}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
+--- !u!114 &2756523546455397732
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4605182470135068568}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 1
+  m_SynchronizeScale: 0
+  m_UseLocal: 1
 --- !u!1 &5106980474093253422
 GameObject:
   m_ObjectHideFlags: 0
