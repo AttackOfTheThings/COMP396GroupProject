@@ -1121,6 +1121,8 @@ MonoBehaviour:
   roundStatistics: {fileID: 3564445802895523458}
   pauseMenu: {fileID: 3564445803259009037}
   doorToFreedom: {fileID: 0}
+  bossPrefab: {fileID: 0}
+  bossSapwn: {fileID: 0}
   networkManager: {fileID: 5573285502379801443}
   fadeScreenAnimator: {fileID: 3564445804376190541}
   photonView: {fileID: 3564445802723848226}
