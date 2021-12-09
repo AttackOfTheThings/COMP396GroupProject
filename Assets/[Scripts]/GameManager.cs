@@ -17,11 +17,14 @@ public class GameManager : MonoBehaviour
     public Text roundStatistics;
     public GameObject pauseMenu;
     public GameObject doorToFreedom;
+    public GameObject bossPrefab;
+    public GameObject bossSapwn;
     //public Text freedomText;
     public GameObject networkManager;
 
     public Animator fadeScreenAnimator;
     public PhotonView photonView;
+
 
     // Start is called before the first frame update
     void Start()
@@ -65,8 +68,14 @@ public class GameManager : MonoBehaviour
             enemiesAlive++;
         }
         
-        if(round > 3)
+        if(round == 4)
         {
+            if(!PhotonNetwork.InRoom)
+
+            {
+                Instantiate(bossPrefab, bossSapwn.transform.position, Quaternion.identity);
+                Destroy(doorToFreedom);
+            }
             Destroy(doorToFreedom);
         }
     }

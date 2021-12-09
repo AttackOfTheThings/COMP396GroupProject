@@ -19,7 +19,7 @@ public class NetworkingManager : MonoBehaviourPunCallbacks
     // Update is called once per frame
     void Update()
     {
-        
+        OnJoinedLobby();
     }
     public override void OnConnectedToMaster()
     {
@@ -31,9 +31,15 @@ public class NetworkingManager : MonoBehaviourPunCallbacks
 
     public override void OnJoinedLobby()
     {
+        int playerCount = PhotonNetwork.CountOfPlayers;
         Debug.Log("Ready for multiplayer");
-        connecting.SetActive(false);
-        multiPlayer.SetActive(true);
+        if (playerCount >= 2)
+        {
+            connecting.SetActive(false);
+
+            multiPlayer.SetActive(true);
+        }
+        
         //base.OnJoinedLobby();
     }
     public void FindMatch()

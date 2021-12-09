@@ -41,6 +41,15 @@ public class MainMenuManager : MonoBehaviour
     {
         Application.Quit();
     }
+    public void BackToMainMenu()
+    {
+        SceneManager.LoadScene(0);
+    }
+
+    public void InscrctionScreen()
+    {
+        SceneManager.LoadScene(8);
+    }
     // Start is called before the first frame update
     void Start()
     {

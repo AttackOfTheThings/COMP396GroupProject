@@ -14,6 +14,7 @@ public class NPCController : MonoBehaviour
     public bool bCanSeePlayer;
     public GameObject goPlayer;
     public float enemyHealth = 100;
+    public GameObject drop;
 
     int CurrentWayPointIndex = 0;
     public float speed = 1.0f;
@@ -179,10 +180,9 @@ public class NPCController : MonoBehaviour
         if (enemyHealth <= 0)
         {
             monsterAnimator.SetTrigger("isDead");
+            Instantiate(drop, new Vector3 (this.transform.position.x, this.transform.position.y + 1, this.transform.position.z), Quaternion.identity);
             //gameManager.enemiesAlive--;
             Destroy(gameObject, 3f);
-            //Destroy(GetComponent<NavMeshAgent>());
-            //Destroy(GetComponent<EnemyManager>());
             Destroy(GetComponent<CapsuleCollider>());
             //Destroy(GetComponent<Canvas>());
             Debug.Log("Died");

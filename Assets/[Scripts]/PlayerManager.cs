@@ -35,7 +35,13 @@ public class PlayerManager : MonoBehaviour
         }
     }
 
-    
+    public void Heal()
+    {
+        health += 50;
+        healthText.text = "Health: " + health.ToString() + " %";
+    }
+
+
     // Start is called before the first frame update
     void Start()
     {
