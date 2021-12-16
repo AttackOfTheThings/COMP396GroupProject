@@ -602,7 +602,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Intructions
+  m_Text: 'Controls
 
     Use WSAD or arrow keys to move character
 
@@ -781,7 +781,10 @@ MonoBehaviour:
 
     Rinse and repeat for three stages
 
-    Defeat the boss'
+    Defeat the boss
+
+    If
+    life gose to zero you lose'
 --- !u!222 &746677082
 CanvasRenderer:
   m_ObjectHideFlags: 0
